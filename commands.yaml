@@ -1,0 +1,6 @@
+pre:
+    - show configuration commands | match martians
+commands:
+    - set firewall log-martians 'enable'
+post:
+    - show configuration commands | match martians

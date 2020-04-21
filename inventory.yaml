@@ -1,0 +1,8 @@
+novac:
+    address: 10.20.30.2
+    username: melhiour
+    port: 1280
+thiem:
+    address: 10.20.30.3
+    username: melhiour
+    port: 1280
