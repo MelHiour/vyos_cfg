@@ -1,6 +1,6 @@
 pre:
-    - show configuration commands | match martians
+    - show configuration commands | match 'config-sync'
 commands:
-    - set firewall log-martians 'enable'
+    - delete system login user config-sync 
 post:
-    - show configuration commands | match martians
+    - show configuration commands | match 'config-sync'

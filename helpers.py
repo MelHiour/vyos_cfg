@@ -37,6 +37,21 @@ def commit_and_save(connection, operation_list, commit=True, save=True, verbose=
             connection.save()
             logging.info('Saved')
 
+def show_run(device_params, verbose=True):
+    if verbose:
+        logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
+    connection = connect(address=device_params['address'],
+                        username=device_params['username'],
+                        password=device_params['password'],
+                        port=device_params['port'])
+    connection.login()
+    logging.info('Logged in into the "{}"'.format(device_params['address']))
+    connection.configure()
+    logging.info('Entered into config mode')
+    config = connection.run_op_mode_command('show configuration commands | no-more')
+    logging.info('Configuration collected')
+    return(config)
+
 def run_commands(connection, commands_list, verbose=True):
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
@@ -55,8 +70,11 @@ def run_commands(connection, commands_list, verbose=True):
         elif operator == 'delete':
             logging.info('Trying to delete "{}"'.format(branch))
             operation_list.add(operator)
-            logging.info('Succesfuly deleted')
-            connection.delete(branch)
+            try:
+                connection.delete(branch)
+                logging.info('Succesfuly deleted')
+            except vymgmt.router.ConfigError:
+                logging.warning('Nothing to delete')
         elif operator == 'show':
             logging.info('Trying to execute "{}"'.format(command))
             operation_list.add(operator)
