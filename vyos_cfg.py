@@ -1,12 +1,18 @@
 import helpers
 import getpass 
+import click
 
-INVENTORY='inventory.yaml'
-COMMANDS='commands.yaml'
+@click.command()
+@click.option('--inventory', '-i', required=True)
+@click.option('--commands', '-c', required=True)
+@click.option('--save', '-s', is_flag=True, default=True)
+@click.option('--verbose', '-v', is_flag=True, default=True)
+def main(inventory, commands, save, verbose):
+    parsed_inventory = helpers.parse_yaml(inventory)
+    password = getpass.getpass('Please enter a password: ')
+    for device, params in parsed_inventory.items():
+        params['password'] = password
+        helpers.deploy(params, commands, save=save, verbose=verbose)
 
-inventory = helpers.parse_yaml(INVENTORY)
-password = getpass.getpass('Please enter a password: ')
-
-for device, params in inventory.items():
-    params['password'] = password
-    helpers.deploy(params, COMMANDS, commit=True, save=True, verbose=True)
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,7 @@
 import vymgmt
 import yaml 
 import logging
+from tabulate import tabulate
 
 def parse_yaml(file):
     with open(file) as file:
@@ -20,7 +21,7 @@ def commit_and_save(connection, operation_list, commit=True, save=True, verbose=
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
     if operation_list == {'show'}:
-        logging.info('Only show commands have been excecuted')
+        logging.info('No need to commit(show commands only)')
         commit = False
         save = False
     else:
@@ -60,7 +61,7 @@ def run_commands(connection, commands_list, verbose=True):
             logging.info('Trying to execute "{}"'.format(command))
             operation_list.add(operator)
             output = connection.run_op_mode_command(command)
-            print('*'*60 + '\n' + output + '\n' + '*'*60)
+            print(tabulate([[output]], tablefmt='grid'))
         else:
             raise('Command is not supported')
     return(operation_list)
@@ -70,7 +71,11 @@ def deploy(device_params, commands_yaml, commit=True, save=True, verbose=True):
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
 
     plan = parse_yaml(commands_yaml)
-    logging.info('Deployment plan parsed')
+    print('\n' + '#'*100)
+    print('Starting for {}'.format(device_params['address']))
+    print('#' * 100)
+
+    logging.info('Deployment plan in {} parsed'.format(commands_yaml))
 
     connection = connect(address=device_params['address'],
                         username=device_params['username'],
