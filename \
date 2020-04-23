@@ -1,6 +1,0 @@
-pre:
-    - show configuration commands | match 'L2TP-TO-PROD rule 110'
-commands:
-    - set firewall name L2TP-TO-PROD rule 110 description 'Access to VEGA'
-post:
-    - show configuration commands | match 'L2TP-TO-PROD rule 110'
