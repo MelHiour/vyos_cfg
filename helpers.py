@@ -3,17 +3,22 @@ import yaml
 import logging
 from tabulate import tabulate
 
-def parse_yaml(file):
+def parse_yaml(file):   
+    '''
+    Just parsing yaml and returing the native python object.
+    file(str): name of yaml file
+    '''
     with open(file) as file:
         result = yaml.load(file, Loader=yaml.FullLoader)
     return(result)
 
-def get_commands_list(file):
-    with open(file) as file:
-        commands = file.read().split('\n')
-    return commands[0:-1]
-
 def string_to_list(raw_string):
+    '''
+    Converting the string to list of line separated by \n
+    raw_string(string)
+
+    Return: list
+    '''
     clean_list = []
     for line in raw_string.splitlines():
         clean_line = line.strip()
@@ -21,6 +26,13 @@ def string_to_list(raw_string):
     return(clean_list)
 
 def filter_list(raw_list, exclude_list):
+    '''
+    Removing items from one list if they are in another
+    raw_list(list)
+    exclude_list(list)
+
+    Return: list
+    '''
     filtered_list = []
     for item in raw_list:
         for keyword in exclude_list:
@@ -35,10 +47,27 @@ def filter_list(raw_list, exclude_list):
     return(unique_list)
 
 def connect(address, username, password, port):
+    '''
+    Provide a connection to the box
+    address(string)
+    username(string)
+    password(string)
+    port(int)
+
+    Return: connection object
+    '''
     vyos = vymgmt.Router(address, username, password=password, port=port)
     return(vyos)
 
 def commit_and_save(connection, operation_list, commit=True, save=True, verbose=True):
+    '''
+    Commiting and saving the configuration based on provided arguments
+    connection(connection object)
+    operation_list(list): list of operations during the configuration ['show', 'set', 'delete']
+    commit(bolean)
+    save(bolean)
+    verbose(bolean)
+    '''
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
     if operation_list == {'show'}:
@@ -59,6 +88,10 @@ def commit_and_save(connection, operation_list, commit=True, save=True, verbose=
             logging.info('Saved')
 
 def show_run(device_params, verbose=True):
+    '''
+    Connect to the device and get "show configuration commands | no-more"
+    return(list)
+    '''
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
     connection = connect(address=device_params['address'],
@@ -79,6 +112,14 @@ def show_run(device_params, verbose=True):
     return(listed_config)
 
 def run_commands(connection, commands_list, verbose=True):
+    '''
+    Run commands based on provided arguments
+    connection(connection object)
+    command_list(str)
+    verbose(bolean)
+    return: list of operations during the configuration ['show', 'set', 'delete']
+
+    '''
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
     operation_list = set()
@@ -111,6 +152,14 @@ def run_commands(connection, commands_list, verbose=True):
     return(operation_list)
 
 def deploy(device_params, commands_yaml, commit=True, save=True, verbose=True):
+    '''
+    Deploy commands based on deployment plan
+    device_params(dict): address, username, password=password, port=port
+    commands_yaml(string): file with YAML deployment plan
+    commit(bolean)
+    save(bolean)
+    verbose(bolean)
+    '''
     if verbose:
         logging.basicConfig(format="%(levelname)s: %(message)s",level=logging.DEBUG)
 

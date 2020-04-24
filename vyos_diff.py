@@ -4,10 +4,10 @@ import helpers
 import getpass
 
 @click.command()
-@click.option('--inventory', '-i', required=True)
-@click.option('--exclude', '-e')
-@click.option('--verbose', '-v', is_flag=True, default=True)
-@click.option('--full', '-f', is_flag=True)
+@click.option('--inventory', '-i', required=True, help='Inventory YAML')
+@click.option('--exclude', '-e', help='YAML file with lines to be excluded from diff')
+@click.option('--verbose', '-v', is_flag=True, default=True, help='Verbose mode (by default)')
+@click.option('--full', '-f', is_flag=True, help='Display full diff insted of changes only')
 
 def main(inventory, verbose, full, exclude):
     parsed_inventory = helpers.parse_yaml(inventory)
