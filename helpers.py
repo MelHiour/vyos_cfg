@@ -13,6 +13,27 @@ def get_commands_list(file):
         commands = file.read().split('\n')
     return commands[0:-1]
 
+def string_to_list(raw_string):
+    clean_list = []
+    for line in raw_string.splitlines():
+        clean_line = line.strip()
+        clean_list.append(clean_line)
+    return(clean_list)
+
+def filter_list(raw_list, exclude_list):
+    filtered_list = []
+    for item in raw_list:
+        for keyword in exclude_list:
+            if keyword in item:
+                break
+        else:
+            filtered_list.append(item)
+    unique_list = []
+    for item in filtered_list:
+        if item not in unique_list:
+            unique_list.append(item)
+    return(unique_list)
+
 def connect(address, username, password, port):
     vyos = vymgmt.Router(address, username, password=password, port=port)
     return(vyos)
@@ -50,7 +71,12 @@ def show_run(device_params, verbose=True):
     logging.info('Entered into config mode')
     config = connection.run_op_mode_command('show configuration commands | no-more')
     logging.info('Configuration collected')
-    return(config)
+    connection.exit()
+    logging.info('Exited config mode')
+    connection.logout()
+    logging.info('Logged out')
+    listed_config = string_to_list(config)
+    return(listed_config)
 
 def run_commands(connection, commands_list, verbose=True):
     if verbose:
