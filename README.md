@@ -7,7 +7,7 @@ Just a simple script for managing two instances of VyOS. It can send a predifine
 ├── commands.yaml         List of commands to be executed (with pre- and post- steps)
 ├── helpers.py            Main functions
 ├── inventory.yaml        Inventory file
-└──  vyos_cfg.py           Script for configuring device
+└── vyos_cfg.py           Script for configuring device
 ```
 
 #### inventory.yaml
