@@ -1,6 +1,6 @@
 **vyos_cfg.py:** A simple script for managing two instances of VyOS. It can send a predifined list of commands to devices. It aslo supports PRE and POST steps.
 
-**сyos_diff.py:** A simple script for getting a diff between device configuration.
+**vyos_diff.py:** A simple script for getting a diff between device configuration.
 
 # vyos_cfg.py
 A simple script for managing two instances of VyOS. It can send a predifined list of commands to devices. It aslo supports PRE and POST steps.
