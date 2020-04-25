@@ -1,6 +1,6 @@
 pre:
-    - show configuration commands | match 'config-sync'
+    - show configuration commands | match 'firewall name L2TP-TO-PROD rule 100'
 commands:
-    - delete system login user config-sync 
+    - set firewall name L2TP-TO-PROD rule 100 destination port '22'
 post:
-    - show configuration commands | match 'config-sync'
+    - show configuration commands | match 'firewall name L2TP-TO-PROD rule 100'   

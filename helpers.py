@@ -25,6 +25,15 @@ def string_to_list(raw_string):
         clean_list.append(clean_line)
     return(clean_list)
 
+def yes_or_no(question):
+    reply = str(input(question+' (y/n): ')).lower().strip()
+    if reply[0] == 'y':
+        return True
+    if reply[0] == 'n':
+        return False
+    else:
+        return yes_or_no("Uhhhh... please enter Y or N")
+
 def filter_list(raw_list, exclude_list):
     '''
     Removing items from one list if they are in another
@@ -177,21 +186,45 @@ def deploy(device_params, commands_yaml, commit=True, save=True, verbose=True):
     connection.login()
     logging.info('Logged in into the "{}"'.format(device_params['address']))
     connection.configure()
+
     logging.info('Entered into config mode')
+    aborted = False
 
-    logging.info('Starting PRE deployment activities')
-    actions = run_commands(connection, plan['pre'], verbose=verbose)
-    commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+    if yes_or_no('\n####: Continue with PRE deployment steps?'):
+        logging.info('Starting PRE deployment activities')
+        actions = run_commands(connection, plan['pre'], verbose=verbose)
+        commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+    else:
+        logging.info('Stoping deployment')
+        connection.exit()
+        connection.logout()
+        aborted = True
 
-    logging.info('Starting deployment activities')
-    actions = run_commands(connection, plan['commands'], verbose=verbose)
-    commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+    if not aborted:
+        if yes_or_no('\n####: Continue with deployment?'):
+            logging.info('Starting deployment activities')
+            actions = run_commands(connection, plan['commands'], verbose=verbose)
+            commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+        else:
+            logging.info('Stoping deployment')
+            connection.exit()
+            connection.logout()
+            aborted = True
 
-    logging.info('Starting POST deployment activities')
-    actions = run_commands(connection, plan['post'], verbose=verbose)
-    commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+    if not aborted:
+        if yes_or_no('\n####: Continue with POST deployment steps?'):
+            logging.info('Starting POST deployment activities')
+            actions = run_commands(connection, plan['post'], verbose=verbose)
+            commit_and_save(connection, actions, commit=commit, save=save, verbose=True)
+        else:
+            logging.info('Stoping deployment')
+            connection.exit()
+            connection.logout()
+            aborted = True
 
-    connection.exit()
-    logging.info('Exited config mode')
-    connection.logout()
-    logging.info('Logged out')
+    if not aborted:
+        connection.exit()
+        logging.info('Exited config mode')
+        connection.logout()
+        logging.info('Logged out')
+
