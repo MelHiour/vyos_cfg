@@ -12,11 +12,11 @@ import getpass
 def main(inventory, verbose, full, exclude):
     parsed_inventory = helpers.parse_yaml(inventory)
     password = getpass.getpass('Please enter a password: ')
-    
+    command = 'show configuration commands | no-more'
     configs = []
     for device, params in parsed_inventory.items():
         params['password'] = password
-        config = helpers.show_run(params, verbose=verbose)
+        config = helpers.run_show(params, command, verbose=verbose)
         configs.append(config)
     
     if exclude:

@@ -96,9 +96,9 @@ def commit_and_save(connection, operation_list, commit=True, save=True, verbose=
             connection.save()
             logging.info('Saved')
 
-def show_run(device_params, verbose=True):
+def run_show(device_params, command, verbose=True):
     '''
-    Connect to the device and get "show configuration commands | no-more"
+    Connect to the device and execute a show command
     return(list)
     '''
     if verbose:
@@ -111,7 +111,7 @@ def show_run(device_params, verbose=True):
     logging.info('Logged in into the "{}"'.format(device_params['address']))
     connection.configure()
     logging.info('Entered into config mode')
-    config = connection.run_op_mode_command('show configuration commands | no-more')
+    config = connection.run_op_mode_command(command)
     logging.info('Configuration collected')
     connection.exit()
     logging.info('Exited config mode')
