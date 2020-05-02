@@ -1,6 +1,12 @@
 pre:
+    - show configuration commands | match 'zone-policy zone WORLD'
+    - show configuration commands | match 'nat source rule 130'
     - show configuration commands | match 'firewall name L2TP-TO-PROD rule 100'
 commands:
-    - set firewall name L2TP-TO-PROD rule 100 destination port '22'
+    - delete zone-policy zone WORLD from L2TP 
+    - delete nat source rule 130
+    - delete firewall name L2TP-TO-PROD rule 100
 post:
-    - show configuration commands | match 'firewall name L2TP-TO-PROD rule 100'   
+    - show configuration commands | match 'zone-policy zone WORLD'
+    - show configuration commands | match 'nat source rule 130'
+    - show configuration commands | match 'firewall name L2TP-TO-PROD rule 100'
